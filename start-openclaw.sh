@@ -93,6 +93,7 @@ config.gateway.controlUi.allowedOrigins = ['*'];
 
 if (process.env.OPENCLAW_GATEWAY_TOKEN) {
     config.gateway.auth = config.gateway.auth || {};
+    config.gateway.auth.mode = 'token';
     config.gateway.auth.token = process.env.OPENCLAW_GATEWAY_TOKEN;
 }
 
@@ -246,4 +247,8 @@ if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
 else
     echo "Starting gateway with device pairing (no token)..."
 fi
-exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan
+if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
+    exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan --token "$OPENCLAW_GATEWAY_TOKEN"
+else
+    exec openclaw gateway --port 18789 --verbose --allow-unconfigured --bind lan
+fi

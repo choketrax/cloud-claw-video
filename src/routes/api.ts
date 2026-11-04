@@ -7,6 +7,10 @@ import { createSnapshot, getLastBackupId, signalRestoreNeeded } from '../persist
 // CLI commands can take 10-15 seconds to complete due to WebSocket connection overhead
 const CLI_TIMEOUT_MS = 20000;
 
+function escapeShellArg(arg: string): string {
+  return `'${arg.replace(/'/g, "'\\''")}'`;
+}
+
 /**
  * API routes
  * - /api/admin/* - Protected admin API routes (Cloudflare Access required)
@@ -34,7 +38,7 @@ adminApi.get('/devices', async (c) => {
     // Run OpenClaw CLI to list devices
     // Must specify --url and --token (OpenClaw v2026.2.3 requires explicit credentials with --url)
     const token = c.env.MOLTBOT_GATEWAY_TOKEN;
-    const tokenArg = token ? ` --token ${token}` : '';
+    const tokenArg = token ? ` --token ${escapeShellArg(token)}` : '';
     const proc = await sandbox.startProcess(
       `openclaw devices list --json --url ws://localhost:18789${tokenArg}`,
     );
@@ -90,7 +94,7 @@ adminApi.post('/devices/:requestId/approve', async (c) => {
 
     // Run OpenClaw CLI to approve the device
     const token = c.env.MOLTBOT_GATEWAY_TOKEN;
-    const tokenArg = token ? ` --token ${token}` : '';
+    const tokenArg = token ? ` --token ${escapeShellArg(token)}` : '';
     const proc = await sandbox.startProcess(
       `openclaw devices approve ${requestId} --url ws://localhost:18789${tokenArg}`,
     );
@@ -126,7 +130,7 @@ adminApi.post('/devices/approve-all', async (c) => {
 
     // First, get the list of pending devices
     const token = c.env.MOLTBOT_GATEWAY_TOKEN;
-    const tokenArg = token ? ` --token ${token}` : '';
+    const tokenArg = token ? ` --token ${escapeShellArg(token)}` : '';
     const listProc = await sandbox.startProcess(
       `openclaw devices list --json --url ws://localhost:18789${tokenArg}`,
     );

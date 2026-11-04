@@ -4,6 +4,11 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-05-06",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "DEV_MODE": "true",
+    "EXPLAINER_SERVICE_URL": "https://explainer-test-worker.dl-56e.workers.dev",
+    "OPENAI_BASE_URL": "https://api.deepseek.com"
+  },
   "observability": {
     "enabled": true,
   },

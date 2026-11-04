@@ -95,10 +95,11 @@ function validateRequiredEnv(env: OpenClawEnv): string[] {
   const hasLegacyGateway = !!(env.AI_GATEWAY_API_KEY && env.AI_GATEWAY_BASE_URL);
   const hasAnthropicKey = !!env.ANTHROPIC_API_KEY;
   const hasOpenAIKey = !!env.OPENAI_API_KEY;
+  const hasDeepSeekKey = !!env.DEEPSEEK_API_KEY;
 
-  if (!hasCloudflareGateway && !hasLegacyGateway && !hasAnthropicKey && !hasOpenAIKey) {
+  if (!hasCloudflareGateway && !hasLegacyGateway && !hasAnthropicKey && !hasOpenAIKey && !hasDeepSeekKey) {
     missing.push(
-      'ANTHROPIC_API_KEY, OPENAI_API_KEY, or CLOUDFLARE_AI_GATEWAY_API_KEY + CF_AI_GATEWAY_ACCOUNT_ID + CF_AI_GATEWAY_GATEWAY_ID',
+      'ANTHROPIC_API_KEY, OPENAI_API_KEY, DEEPSEEK_API_KEY, or CLOUDFLARE_AI_GATEWAY_API_KEY + CF_AI_GATEWAY_ACCOUNT_ID + CF_AI_GATEWAY_GATEWAY_ID',
     );
   }
 

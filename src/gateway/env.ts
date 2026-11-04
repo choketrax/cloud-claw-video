@@ -23,6 +23,12 @@ export function buildEnvVars(env: OpenClawEnv): Record<string, string> {
   // Direct provider keys
   if (env.ANTHROPIC_API_KEY) envVars.ANTHROPIC_API_KEY = env.ANTHROPIC_API_KEY;
   if (env.OPENAI_API_KEY) envVars.OPENAI_API_KEY = env.OPENAI_API_KEY;
+  if (env.OPENAI_BASE_URL) envVars.OPENAI_BASE_URL = env.OPENAI_BASE_URL;
+  if (env.DEEPSEEK_API_KEY) {
+    envVars.DEEPSEEK_API_KEY = env.DEEPSEEK_API_KEY;
+    if (!envVars.OPENAI_API_KEY) envVars.OPENAI_API_KEY = env.DEEPSEEK_API_KEY;
+    if (!envVars.OPENAI_BASE_URL) envVars.OPENAI_BASE_URL = 'https://api.deepseek.com';
+  }
 
   // Legacy AI Gateway support: AI_GATEWAY_BASE_URL + AI_GATEWAY_API_KEY
   // When set, these override direct keys for backward compatibility

@@ -110,6 +110,27 @@ if (process.env.OPENCLAW_DEV_MODE === 'true') {
     config.gateway.controlUi.allowInsecureAuth = true;
 }
 
+// DeepSeek Model Provider configuration
+if (process.env.DEEPSEEK_API_KEY || (process.env.OPENAI_BASE_URL && process.env.OPENAI_BASE_URL.includes('deepseek'))) {
+    const dsKey = process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY;
+    const dsBase = process.env.OPENAI_BASE_URL || 'https://api.deepseek.com';
+    config.models = config.models || {};
+    config.models.providers = config.models.providers || {};
+    config.models.providers.deepseek = {
+        baseUrl: dsBase,
+        apiKey: dsKey,
+        api: 'openai-completions',
+        models: [
+            { id: 'deepseek-chat', name: 'DeepSeek-V3', contextWindow: 65536, maxTokens: 8192 },
+            { id: 'deepseek-reasoner', name: 'DeepSeek-R1', contextWindow: 65536, maxTokens: 8192 }
+        ],
+    };
+    config.agents = config.agents || {};
+    config.agents.defaults = config.agents.defaults || {};
+    config.agents.defaults.model = { primary: 'deepseek/deepseek-chat' };
+    console.log('Configured DeepSeek as primary model provider (deepseek/deepseek-chat)');
+}
+
 // Legacy AI Gateway base URL override:
 // ANTHROPIC_BASE_URL is picked up natively by the Anthropic SDK,
 // so we don't need to patch the provider config. Writing a provider

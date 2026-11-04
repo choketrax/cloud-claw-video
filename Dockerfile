@@ -29,9 +29,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev \
     build-essential \
     libsndfile1 \
+    pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
-# 3. Dedicated Python environment for video tools & faster-whisper
+# 3. Dedicated Python environment for video tools, generation & faster-whisper
 RUN python3 -m venv /opt/cloudclaw/video-venv && \
     /opt/cloudclaw/video-venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
     /opt/cloudclaw/video-venv/bin/pip install --no-cache-dir \
@@ -40,7 +41,28 @@ RUN python3 -m venv /opt/cloudclaw/video-venv && \
         matplotlib \
         pillow \
         numpy \
-        faster-whisper
+        faster-whisper \
+        yt-dlp \
+        edge-tts \
+        moviepy \
+        opencv-python-headless \
+        imageio \
+        imageio-ffmpeg \
+        av \
+    && ln -sf /opt/cloudclaw/video-venv/bin/yt-dlp /usr/local/bin/yt-dlp \
+    && ln -sf /opt/cloudclaw/video-venv/bin/edge-tts /usr/local/bin/edge-tts \
+    && ln -sf /opt/cloudclaw/video-venv/bin/edge-playback /usr/local/bin/edge-playback \
+    && pip3 install --no-cache-dir --break-system-packages \
+        yt-dlp \
+        edge-tts \
+        moviepy \
+        opencv-python-headless \
+        imageio \
+        imageio-ffmpeg \
+        av \
+        faster-whisper \
+        pillow \
+        numpy || true
 
 # 4. Create directories & clone immutable video skill repositories
 RUN mkdir -p /opt/cloudclaw/skills /opt/cloudclaw/bin /opt/cloudclaw/cache/whisper /work/jobs && \

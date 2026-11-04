@@ -288,4 +288,20 @@ adminApi.post('/gateway/restart', async (c) => {
 // Mount admin API routes under /admin
 api.route('/admin', adminApi);
 
+
+// POST /api/admin/gateway/stop - Destroy container and put it to sleep immediately ($0 compute)
+adminApi.post('/gateway/stop', async (c) => {
+  const sandbox = c.get('sandbox');
+  try {
+    await sandbox.destroy();
+    return c.json({
+      success: true,
+      message: 'Container stopped and put to sleep. Compute billing paused ($0). It will wake on your next request.',
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    return c.json({ error: errorMessage }, 500);
+  }
+});
+
 export { api };

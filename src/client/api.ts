@@ -137,3 +137,15 @@ export async function triggerSync(): Promise<SyncResponse> {
     method: 'POST',
   });
 }
+
+export interface StopContainerResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
+
+export async function stopContainer(): Promise<StopContainerResponse> {
+  return apiRequest<StopContainerResponse>('/gateway/stop', {
+    method: 'POST',
+  });
+}

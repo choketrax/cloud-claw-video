@@ -4,6 +4,7 @@ import {
   approveDevice,
   approveAllDevices,
   restartGateway,
+  stopContainer,
   getStorageStatus,
   triggerSync,
   AuthError,
@@ -53,6 +54,32 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [actionInProgress, setActionInProgress] = useState<string | null>(null);
   const [restartInProgress, setRestartInProgress] = useState(false);
+  const [stopInProgress, setStopInProgress] = useState(false);
+
+  const handleStopContainer = async () => {
+    if (
+      !confirm(
+        'Are you sure you want to stop the container now? Compute billing will drop to $0 immediately. The container will automatically wake up next time you open the chat.',
+      )
+    ) {
+      return;
+    }
+
+    setStopInProgress(true);
+    try {
+      const result = await stopContainer();
+      if (result.success) {
+        alert('Container has been stopped! Compute billing is now paused ($0).');
+      } else {
+        setError(result.error || 'Failed to stop container');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to stop container');
+    } finally {
+      setStopInProgress(false);
+    }
+  };
+
   const [syncInProgress, setSyncInProgress] = useState(false);
 
   const fetchDevices = useCallback(async () => {
